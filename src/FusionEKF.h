@@ -47,6 +47,9 @@ private:
 
   float noise_ax;
   float noise_ay;
+
+  bool radar_active;
+  bool laser_active;
 };
 
 #endif /* FusionEKF_H_ */
