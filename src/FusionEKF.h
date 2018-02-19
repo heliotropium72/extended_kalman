@@ -44,6 +44,9 @@ private:
   Eigen::MatrixXd R_radar_;
   Eigen::MatrixXd H_laser_;
   Eigen::MatrixXd Hj_;
+  // Is this correct?
+  Eigen::MatrixXd P_;
+  Eigen::MatrixXd F_;
 };
 
 #endif /* FusionEKF_H_ */

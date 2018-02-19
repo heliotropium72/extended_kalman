@@ -63,7 +63,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // Map the predicted state to radar measurements (polar coordinated)
   VectorXd z_pred(3);
   z_pred(0) << sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-  z_pred(1) << atan(x_(1)/x_(0));
+  z_pred(1) << atan2(x_(1)/x_(0));
   z_pred(2) << (x_(0)*x_(2) + x_(1)*x_(3)) / z_pred(0);
   VectorXd y = z - z_pred;
   // Check second entry of y (phi). Should be between -Pi and Pi
