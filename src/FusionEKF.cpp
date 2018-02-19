@@ -42,8 +42,11 @@ FusionEKF::FusionEKF() {
   float noise_ay = 9;
 
   // Select which sensor(s) are used
-  bool laser_active = false;
-  bool radar_active = false;
+  bool laser_active = true;
+  bool radar_active = true;
+
+  cout << "Laser: " << laser_active << endl;
+  cout << "Radar: " << radar_active << endl;
 }
 
 /**
@@ -141,6 +144,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Update
    ****************************************************************************/
+  cout << "x_ predicted = " << ekf_.x_ << endl;
+  cout << "ground truth = " << measurement_pack.raw_measurements_ << endl;
+
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
 	  //cout << "skip radar" << endl;
