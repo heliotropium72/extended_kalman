@@ -53,6 +53,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
   *  Ellapsed time and rest
   ****************************************************************************/
+  if (!is_initialized_) // only the very first measurement
+	previous_timestamp_ = measurement_pack.timestamp_;
   //compute the time elapsed between the current and previous measurements
 	float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;	//dt - expressed in seconds
 	previous_timestamp_ = measurement_pack.timestamp_;
@@ -70,7 +72,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1;
+    ekf_.x_ << 1, 1, 0.25, 0.25;
 	double p_x;
 	double p_y;
 
@@ -138,14 +140,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    ****************************************************************************/
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-	  ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
-	  ekf_.R_ = R_radar_;
-	  ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+	  cout << "skip radar" << endl;
+	  //ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+	  //ekf_.R_ = R_radar_;
+	  //ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
 	  ekf_.H_ = H_laser_;
 	  ekf_.R_ = R_laser_;
 	  ekf_.Update(measurement_pack.raw_measurements_);
+	
   }
 
   // print the output
