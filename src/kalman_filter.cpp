@@ -55,7 +55,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   z_pred(0) = sqrt(p_x*p_x + p_y*p_y);
   z_pred(1) = atan2(p_y, p_x);
   z_pred(2) = (p_x*v_x + p_y*v_y) / z_pred(0);
-  cout << "Prediction in polar coordinates z =  " << z_pred << endl;
   // Difference between measurement and prediction
   VectorXd y = z - z_pred;
   // Second entry of y (theta) should be between -Pi and Pi  
@@ -65,9 +64,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 	while (y(1) < -M_PI)
 		y(1) += 2.0 * M_PI;
   }
-  cout << "Residual y =  " << y << endl;
 
-  // H is the Jacobian of the current state now
+  // H is the Jacobian of the current predicted state now
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();

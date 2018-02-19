@@ -110,7 +110,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		0, 0, 1, 0,
 		0, 0, 0, 1;
 
-	// state covariance matrix (from lesson)
+	// state covariance matrix (values from lesson)
 	ekf_.P_ = MatrixXd(4, 4);
 	ekf_.P_ << 1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -147,8 +147,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   /*****************************************************************************
    *  Update
    ****************************************************************************/
-  cout << "x_ predicted = " << ekf_.x_ << endl;
-  cout << "ground truth = " << measurement_pack.raw_measurements_ << endl;
+  //cout << "x_ predicted = " << ekf_.x_ << endl;
+  //cout << "ground truth = " << measurement_pack.raw_measurements_ << endl;
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
@@ -160,7 +160,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		  ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 	  }
 	  else
-		  cout << "Radar skipped." << endl;
+		  cout << "Radar data skipped." << endl;
   }
   else {
 	  // Laser updates
@@ -170,7 +170,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		  ekf_.Update(measurement_pack.raw_measurements_);
 	  }
 	  else
-		  cout << "Laser skipped." << endl;
+		  cout << "Laser data skipped." << endl;
   }
 
   // print the output
