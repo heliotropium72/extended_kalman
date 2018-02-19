@@ -51,8 +51,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   z_pred(2) = (x_(0)*x_(2) + x_(1)*x_(3)) / z_pred(0);
   VectorXd y = z - z_pred;
   // Check second entry of y (phi). Should be between -Pi and Pi
-  if (y(1) > M_PI || y(1) < M_PI) {
-	  cout << "Define some modulus function here." << endl;
+  if (y(1) > M_PI || y(1) < -M_PI) {
+    cout << "Error: Angle is not between -Pi and Pi" << endl;
+    while (y(1) > M_Pi)
+      y(1) -= 2*M_Pi
+    while (y(1) < -M_Pi)
+      y(1) += 2 * M_Pi
   }
 
   // H is the Jacobian of the current state now
