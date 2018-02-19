@@ -71,6 +71,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
     ekf_.x_ << 1, 1, 1, 1;
+	double p_x;
+	double p_y;
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
 	  // Polar coordinates
@@ -78,12 +80,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	  double theta = measurement_pack.raw_measurements_[1];
 	  double vrho = measurement_pack.raw_measurements_[2];
 	  // Cartesian coordinates
-	  double p_x = rho * cos(theta);
-	  double p_y = rho * sin(theta);
+	  p_x = rho * cos(theta);
+	  p_y = rho * sin(theta);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-	  double p_x = measurement_pack.raw_measurements_[0];
-	  double p_y = measurement_pack.raw_measurements_[1];
+	  p_x = measurement_pack.raw_measurements_[0];
+	  p_y = measurement_pack.raw_measurements_[1];
     }
 	// Initialize state
 	ekf_.x_(0) = p_x;
