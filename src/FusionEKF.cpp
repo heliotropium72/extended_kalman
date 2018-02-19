@@ -1,5 +1,6 @@
 #include "FusionEKF.h"
 #include "tools.h"
+#include "math.h"
 #include "Eigen/Dense"
 #include <iostream>
 
@@ -36,14 +37,17 @@ FusionEKF::FusionEKF() {
 	  0, 1, 0, 0;
 
   // measurement matrix Radar: calculate for every step the jacobian Hj_
+  Hj_ << 1, 0, 0, 0,
+	  0, 1, 0, 0,
+	  0, 0, 1, 0;
 
   // acceleration noise
   float noise_ax = 9;
   float noise_ay = 9;
 
   // Select which sensor(s) are used
-  bool laser_active = true;
-  bool radar_active = true;
+  bool laser_active = false;
+  bool radar_active = false;
 
   cout << "Laser: " << laser_active << endl;
   cout << "Radar: " << radar_active << endl;
@@ -78,7 +82,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 0.25, 0.25;
+    ekf_.x_ << 1, 1, 0.5, 0.5;
 	double p_x;
 	double p_y;
 
@@ -116,7 +120,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	// process noise covariance matrix Q_
 	//ekf_.Q_
 
-    // done initializing, no need to predict or update
 	//previous_timestamp_ = measurement_pack.timestamp_;
     is_initialized_ = true;
     return;
@@ -151,7 +154,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // Radar updates
 	  //cout << "skip radar" << endl;
 	  if (radar_active) {
-		ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
+		Hj_ = tools.CalculateJacobian(ekf_.x_);
+		ekf_.H_ = Hj_;
 		ekf_.R_ = R_radar_;
 		ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 	  }

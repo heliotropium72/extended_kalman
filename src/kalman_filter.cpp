@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#include "math.h"
 #include <iostream>
 
 using Eigen::MatrixXd;
@@ -44,22 +45,27 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
+  //Predicted state in cartesian coordinates
+  float p_x = x_(0);
+  float p_y = x_(1);
+  float v_x = x_(2);
+  float v_y = x_(3);
   // Map the predicted state to radar measurements (polar coordinated)
   VectorXd z_pred(3);
-  z_pred(0) = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-  z_pred(1) = atan2(x_(1), x_(0));
-  z_pred(2) = (x_(0)*x_(2) + x_(1)*x_(3)) / z_pred(0);
+  z_pred(0) = sqrt(p_x*p_x + p_y*p_y);
+  z_pred(1) = atan2(p_y, p_x);
+  z_pred(2) = (p_x*v_x + p_y*v_y) / z_pred(0);
+  cout << "Prediction in polar coordinates z =  " << z_pred << endl;
+  // Difference between measurement and prediction
   VectorXd y = z - z_pred;
-  // Check second entry of y (phi). Should be between -Pi and Pi
-  cout << "Residual y =  " << y << endl;
+  // Second entry of y (theta) should be between -Pi and Pi  
   if (y(1) > M_PI || y(1) < -M_PI) {
-    //cout << "Error: Angle is not between -Pi and Pi" << endl;
 	while (y(1) > M_PI)
-		y(1) -= 2 * M_PI;
+		y(1) -= 2.0 * M_PI;
 	while (y(1) < -M_PI)
-		y(1) += 2 * M_PI;
-	cout << "New theta =  " << y(1) << endl;
+		y(1) += 2.0 * M_PI;
   }
+  cout << "Residual y =  " << y << endl;
 
   // H is the Jacobian of the current state now
   MatrixXd Ht = H_.transpose();
