@@ -148,26 +148,31 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Update
    ****************************************************************************/
   cout << "x_ predicted = " << ekf_.x_ << endl;
+  cout << "x_ predicted 2 = " << ekf_.x_ << endl;
   cout << "ground truth = " << measurement_pack.raw_measurements_ << endl;
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
 	  //cout << "skip radar" << endl;
 	  if (radar_active) {
-		Hj_ = tools.CalculateJacobian(ekf_.x_);
-		ekf_.H_ = Hj_;
-		ekf_.R_ = R_radar_;
-		ekf_.UpdateEKF(measurement_pack.raw_measurements_);
+		  Hj_ = tools.CalculateJacobian(ekf_.x_);
+		  ekf_.H_ = Hj_;
+		  ekf_.R_ = R_radar_;
+		  ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 	  }
+	  else
+		  cout << "Radar skipped." << endl;
   }
   else {
 	  // Laser updates
 	  //cout << "skip Laser" << endl;
 	  if (laser_active) {
-	    ekf_.H_ = H_laser_;
-	    ekf_.R_ = R_laser_;
-	    ekf_.Update(measurement_pack.raw_measurements_);
-		}
+		  ekf_.H_ = H_laser_;
+		  ekf_.R_ = R_laser_;
+		  ekf_.Update(measurement_pack.raw_measurements_);
+	  }
+	  else
+		  cout << "Laser skipped." << endl;
   }
 
   // print the output
