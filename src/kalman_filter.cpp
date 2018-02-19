@@ -53,10 +53,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // Check second entry of y (phi). Should be between -Pi and Pi
   if (y(1) > M_PI || y(1) < -M_PI) {
     cout << "Error: Angle is not between -Pi and Pi" << endl;
-    while (y(1) > M_PI)
-      y(1) -= 2*M_PI
-    while (y(1) < -M_PI)
-      y(1) += 2 * M_PI
+	while (y(1) > M_PI)
+		y(1) -= 2 * M_PI;
+	while (y(1) < -M_PI)
+		y(1) += 2 * M_PI;
   }
 
   // H is the Jacobian of the current state now
