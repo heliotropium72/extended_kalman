@@ -37,20 +37,6 @@ FusionEKF::FusionEKF() {
 
   // measurement matrix Radar: calculate for every step the jacobian Hj_
 
-  //the initial transition matrix F_
-  ekf_.F_ = MatrixXd(4, 4);
-  ekf_.F_ << 1, 0, 1, 0,
-	  0, 1, 0, 1,
-	  0, 0, 1, 0,
-	  0, 0, 0, 1;
-
-  // state covariance matrix (from lesson)
-  ekf_.P_ = MatrixXd(4, 4);
-  ekf_.P_ << 0.1, 0, 0, 0,
-	  0, 0.1, 0, 0,
-	  0, 0, 1, 0,
-	  0, 0, 0, 1;
-
   // acceleration noise
   float noise_ax = 9;
   float noise_ay = 9;
@@ -73,7 +59,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   //Check if the delta time is > 3 secs and reset
   // This is needed in case of reset within the simulator
-  if (dt < 0) { //((dt > 3) || (dt < 0))
+  if ((dt > 3) || (dt < 0)) {
 		is_initialized_ = false;
 		cout << "Re-initialize" << endl;
   }
@@ -89,23 +75,36 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
 	  // Polar coordinates
 	  double rho = measurement_pack.raw_measurements_[0];
-	  double phi = measurement_pack.raw_measurements_[1];
+	  double theta = measurement_pack.raw_measurements_[1];
 	  double vrho = measurement_pack.raw_measurements_[2];
 	  // Cartesian coordinates
-	  double p_x = rho * cos(phi);
-	  double p_y = rho * sin(phi); 
-
-	  // Initialize state
-	  ekf_.x_(0) = p_x;
-	  ekf_.x_(1) = p_y;
+	  double p_x = rho * cos(theta);
+	  double p_y = rho * sin(theta);
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-	  ekf_.x_(0) = measurement_pack.raw_measurements_[0];
-	  ekf_.x_(1) = measurement_pack.raw_measurements_[1];
+	  double p_x = measurement_pack.raw_measurements_[0];
+	  double p_y = measurement_pack.raw_measurements_[1];
     }
+	// Initialize state
+	ekf_.x_(0) = p_x;
+	ekf_.x_(1) = p_y;
+
+	//the initial transition matrix F_
+	ekf_.F_ = MatrixXd(4, 4);
+	ekf_.F_ << 1, 0, 1, 0,
+		0, 1, 0, 1,
+		0, 0, 1, 0,
+		0, 0, 0, 1;
+
+	// state covariance matrix (from lesson)
+	ekf_.P_ = MatrixXd(4, 4);
+	ekf_.P_ << 0.01, 0, 0, 0,
+		0, 0.01, 0, 0,
+		0, 0, 10, 0,
+		0, 0, 0, 10;
 
 	// process noise covariance matrix Q_
-	//ekf_.Q_ << 0;
+	//ekf_.Q_
 
     // done initializing, no need to predict or update
 	//previous_timestamp_ = measurement_pack.timestamp_;
