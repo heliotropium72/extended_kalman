@@ -41,13 +41,13 @@ FusionEKF::FusionEKF() {
 	  0, 1, 0, 0,
 	  0, 0, 1, 0;
 
-  // acceleration noise
-  float noise_ax = 9;
-  float noise_ay = 9;
+  // acceleration noise (no decleration; otherwise they are in a different scope!!!)
+  noise_ax = 9;
+  noise_ay = 9;
 
   // Select which sensor(s) are used
-  bool laser_active = false;
-  bool radar_active = false;
+  laser_active = false;
+  radar_active = false;
 
   cout << "Laser: " << laser_active << endl;
   cout << "Radar: " << radar_active << endl;
