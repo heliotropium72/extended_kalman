@@ -66,7 +66,7 @@ public:
   void UpdateEKF(const Eigen::VectorXd &z);
 
 private:
-  Tools tools
+	Tools tools;
 };
 
 #endif /* KALMAN_FILTER_H_ */
