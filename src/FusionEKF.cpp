@@ -38,8 +38,8 @@ FusionEKF::FusionEKF() {
   // measurement matrix Radar: calculate for every step the jacobian Hj_
 
   // acceleration noise
-  float noise_ax = 9;
-  float noise_ay = 9;
+  float noise_ax = 6;//9;
+  float noise_ay = 6;// 9;
 
 }
 
